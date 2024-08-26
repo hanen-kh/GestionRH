@@ -48,7 +48,7 @@ public class SecurityConfig  {
                                 authorize ->
                                         authorize
                                                 .requestMatchers(POST,"/api/utilisateur/demande-nouveau-pass", "/api/utilisateur/changerpass", "/api/utilisateur/connexion").permitAll()
-                                                .requestMatchers(GET,"/api/prime/utilisateur/{idUtilisateur}").permitAll()
+
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
