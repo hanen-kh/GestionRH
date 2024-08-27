@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,29 +23,34 @@ public class EmployeController {
     private EmployeService employeService;
 
     @GetMapping("/departement/{nomDepartement}")
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<List<EmployeDto>> getEmployesByNomDepartement(@PathVariable String nomDepartement) {
         List<EmployeDto> employes = employeService.getEmployesByNomDepartement(nomDepartement);
         return ResponseEntity.ok(employes);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<List<EmployeDto>> getAllEmployes() {
         List<EmployeDto> employes = employeService.findAllEmployes();
         return ResponseEntity.ok(employes);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<EmployeDto> getEmployeById(@PathVariable Long id) {
         EmployeDto employe = employeService.findEmployeById(id);
         return ResponseEntity.ok(employe);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<EmployeDto> updateEmploye(@PathVariable Long id, @RequestBody EmployeDto employeDto) {
         EmployeDto updatedEmploye = employeService.updateEmploye(id, employeDto);
         return ResponseEntity.ok(updatedEmploye);
     }
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<EmployeDto> createEmploye( @RequestBody EmployeDto employeDto) {
         employeService.saveEmploye( employeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(employeDto);
