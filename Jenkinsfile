@@ -7,8 +7,13 @@ pipeline {
             git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
          }
 
-
       }
+      stage('Build') {
+                  steps {
+                      sh 'echo "Building..."'
+                      sh 'mvn clean package'
+                  }
+              }
 
 
   }
