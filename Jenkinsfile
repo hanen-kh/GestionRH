@@ -8,10 +8,10 @@ pipeline {
          }
 
       }
-      stage('unit tests') {
+      stage('clean package') {
                   steps {
-                      sh 'echo "Testing..."'
-                      sh 'mvn test'
+
+                      sh 'mvn clean package'
                   }
               }
 
