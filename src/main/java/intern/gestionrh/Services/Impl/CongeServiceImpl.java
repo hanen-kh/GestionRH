@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+
 @AllArgsConstructor
 @Service
 public class CongeServiceImpl implements CongeService {
@@ -28,12 +28,18 @@ public class CongeServiceImpl implements CongeService {
     @Autowired
     private EmailService emailService;
     @Override
-    public List<CongeDto> findCongesByEmployeId(Long idUEmploye) {
-        List<Conge> conges = congeRepo.findByEmployeId(idUEmploye);
-        return conges.stream()
-                .map(conge -> modelMapper.map(conge, CongeDto.class))
-                .collect(Collectors.toList());
-    }
+    public Set<Conge> findCongesByEmployeId(Long idUEmploye) {
+        Employe employe = employeRepo.findById(idUEmploye)
+                .orElseThrow(() -> new ResourceNotFoundException("Employé introuvable avec cet ID : " + idUEmploye));
+
+
+        // Récupérer les congés de l'employé
+        Set<Conge> conges = employe.getConges();
+
+
+        return conges;}
+
+
 
 
     @Override
@@ -43,13 +49,14 @@ public class CongeServiceImpl implements CongeService {
                 .orElseThrow(() -> new ResourceNotFoundException("congé n'existe pas pour cet id " + id));
 
 
-        modelMapper.map(congeDetails, conge);
+       conge= modelMapper.map(congeDetails, Conge.class);
 
         conge = congeRepo.save(conge);
         // Récupérer l'employé associé au congé
         Employe employe = conge.getEmploye();
         // Trouver le RH du même département
         Departement departement = employe.getDepartement();
+
         if (departement != null) {
             for (Utilisateur utilisateur : departement.getEmployesDepartement()) {
                 if (utilisateur instanceof RH) {
@@ -71,7 +78,7 @@ public class CongeServiceImpl implements CongeService {
                 }
 
     }}
-        return modelMapper.map(conge, CongeDto.class);}
+        return congeDetails;}
 
 
     @Override

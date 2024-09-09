@@ -40,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 
+
 @AutoConfigureMockMvc(addFilters = true)
 public class UtilisateurControllerTest {
     @Autowired
@@ -62,7 +63,7 @@ public class UtilisateurControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(authorities = "ROLE_ADMIN")
     public void testDeleteAllUtilisateurs_AuthorizedAsAdmin() throws Exception {
         // Mock the service call to do nothing
         doNothing().when(utilisateurService).deleteAllUtilisateurs();
@@ -73,7 +74,7 @@ public class UtilisateurControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")  // Simulate a user with the ROLE_ADMIN authority
+    @WithMockUser(authorities = "ROLE_ADMIN")
     public void testGetUtilisateursByNomDepartement_withAdminRole() throws Exception {
         // Given: Mocking the service layer
         String nomDepartement = "Finance";
@@ -107,7 +108,7 @@ public class UtilisateurControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")  // Simulate a user with the ROLE_ADMIN authority
+    @WithMockUser(authorities = "ROLE_ADMIN")
     public void testDeleteUtilisateurById_withAdminRole() throws Exception {
         Long userId = 1L;
 
@@ -124,7 +125,7 @@ public class UtilisateurControllerTest {
 
 
     @Test
-    @WithMockUser(roles = "ADMIN")  // Simulate a user with the ROLE_ADMIN authority
+    @WithMockUser(authorities = "ROLE_ADMIN")
     public void testUpdateUtilisateur_withAdminRole() throws Exception {
 
 
@@ -165,7 +166,7 @@ public class UtilisateurControllerTest {
 
 
     @Test
-    @WithMockUser(roles = "ADMIN")  // Simulate a user with the ROLE_ADMIN authority
+    @WithMockUser(authorities = "ROLE_ADMIN")
     public void testCreateAdmin_withAdminRole() throws Exception {
 
         AdminDto adminDto = new AdminDto();

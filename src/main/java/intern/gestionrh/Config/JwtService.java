@@ -68,7 +68,7 @@ public Jwt tokenByValeur(String valeur){
      jwtRepository.saveAll(jwtList);
     }
 
-    private Map<String, String> generateJwt(Utilisateur utilisateur) {
+    public Map<String, String> generateJwt(Utilisateur utilisateur) {
         final long currentTime = System.currentTimeMillis();
         final long expirationTime = currentTime + 30 * 60 * 1000;
 
@@ -88,12 +88,12 @@ public Jwt tokenByValeur(String valeur){
         return Map.of("bearer", bearer);
     }
 
-    private Key getKey() {
+    public Key getKey() {
         final byte[] decoder = Decoders.BASE64.decode(ENCRIPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
     }
 
-    private Date getExpirationDateFromToken(String token) {
+    public Date getExpirationDateFromToken(String token) {
         return this.getClaim(token, Claims::getExpiration);
     }
 
@@ -102,12 +102,12 @@ public Jwt tokenByValeur(String valeur){
         return expirationDate.before(new Date());
     }
 
-    private <T> T getClaim(String token, Function<Claims, T> function) {
+    public  <T> T getClaim(String token, Function<Claims, T> function) {
         Claims claims = getAllClaims(token);
         return function.apply(claims);
     }
 
-    private Claims getAllClaims(String token) {
+    public Claims getAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(this.getKey())
                 .build()
