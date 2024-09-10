@@ -18,9 +18,18 @@ pipeline {
                     steps{
                     bat 'mvn test'
                    }
+                  }
 
+      stage('SonarQube Analysis')    {
 
-  }
+                   steps{
+                   withSonarQubeEnv(credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782') {
+                       bat 'mvn clean package sonar:sonar'
+                   }
+                   }
+
+                }
+
   }
 
 }
