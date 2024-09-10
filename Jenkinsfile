@@ -14,6 +14,10 @@ pipeline {
                       bat 'mvn clean package'
                   }
               }
+      stage('Unit Tests'){
+                    steps{
+                    bat 'mvn test'
+                   }
 
 
   }
