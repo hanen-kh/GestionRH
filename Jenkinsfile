@@ -28,6 +28,15 @@ pipeline {
                           }
                    }
 
+      stage('Quality Gate status'){
+
+                  steps{
+
+                    scripts{waitForQualityGate abortPipeline: false, credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782'}
+                    }
+
+                  }
+
                 }
 
   }
