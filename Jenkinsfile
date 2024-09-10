@@ -33,7 +33,7 @@ pipeline {
 
                         steps{
 
-                          script{waitForQualityGate abortPipeline: false, credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782'}
+                          script{waitForQualityGate abortPipeline: true, credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782'}
                           }
 
                         }
