@@ -60,13 +60,13 @@ pipeline {
                       nexusArtifactUploader(
                           nexusVersion: 'nexus3', // Version de Nexus
                           protocol: 'http', // Protocole de Nexus (http ou https)
-                          nexusUrl: 'localhost:8081', // URL de Nexus (remplacez par la vôtre)
+                          nexusUrl: 'localhost:5/', // URL de Nexus
                           groupId: pom.groupId,
                           version: pom.version,
-                          repository: 'maven-releases', // Remplacez par le nom de votre repository
-                          credentialsId: 'nexus-credentials-id', // Remplacez par l'ID des credentials Nexus dans Jenkins
+                          repository: 'GestionRH', // Remplacez par le nom de repository
+                          credentialsId: 'Nexus', // Remplacez par l'ID des credentials Nexus dans Jenkins
                           artifacts: [
-                              // Artifact généré (par exemple, .jar, .ear, .war)
+                              // Artifact généré ( .jar, .ear, .war)
                               [artifactId: pom.artifactId,
                               classifier: '',
                               file: artifactPath,
