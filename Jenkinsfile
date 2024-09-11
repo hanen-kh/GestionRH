@@ -38,6 +38,56 @@ pipeline {
 
                         }
 
+      stage("Publish to Nexus") {
+          steps {
+              script {
+                  // Lire le fichier POM en utilisant le plugin pipeline-utility-steps
+                  pom = readMavenPom file: "pom.xml";
+
+                  // Trouver l'artifact généré dans le dossier target
+                  filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+
+                  // Vérifier et afficher des informations sur l'artifact trouvé
+                  echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}";
+
+                  artifactPath = filesByGlob[0].path;
+                  artifactExists = fileExists artifactPath;
+
+                  if (artifactExists) {
+                      echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version: ${pom.version}";
+
+                      // Télécharger l'artifact et le fichier POM vers Nexus
+                      nexusArtifactUploader(
+                          nexusVersion: 'nexus3', // Version de Nexus
+                          protocol: 'http', // Protocole de Nexus (http ou https)
+                          nexusUrl: 'localhost:8081', // URL de Nexus (remplacez par la vôtre)
+                          groupId: pom.groupId,
+                          version: pom.version,
+                          repository: 'maven-releases', // Remplacez par le nom de votre repository
+                          credentialsId: 'nexus-credentials-id', // Remplacez par l'ID des credentials Nexus dans Jenkins
+                          artifacts: [
+                              // Artifact généré (par exemple, .jar, .ear, .war)
+                              [artifactId: pom.artifactId,
+                              classifier: '',
+                              file: artifactPath,
+                              type: pom.packaging],
+
+                              // Télécharger le fichier pom.xml pour les dépendances transitives
+                              [artifactId: pom.artifactId,
+                              classifier: '',
+                              file: "pom.xml",
+                              type: "pom"]
+                          ]
+                      );
+
+                  } else {
+                      error "*** File: ${artifactPath}, could not be found";
+                  }
+              }
+          }
+      }
+
+
   }
 
 }
