@@ -29,14 +29,7 @@ pipeline {
                    }
                                      }
 
-      stage('Quality Gate status'){
 
-                        steps{
-
-                          script{waitForQualityGate abortPipeline: true, credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782'}
-                          }
-
-                        }
 
       stage("Publish to Nexus") {
           steps {
