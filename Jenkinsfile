@@ -37,7 +37,29 @@ pipeline {
                           }
 
                         }
+       stage('upload to nexus'){
+                        steps{
+                          nexusArtifactUploader artifacts:
+                          [
+                            [
+                               artifactId: 'GestionRH',
+                                classifier: '',
+                                file: 'target/GestionRH-0.0.1-SNAPSHOT.jar',
+                                 type: 'jar'
+                                 ]
+                                 ],
+                                  credentialsId: 'nexus',
+                                   groupId: 'intern',
+                                    nexusUrl: 'localhost:5',
+                                     nexusVersion: 'nexus3',
+                                      protocol: 'http',
+                                       repository: 'GestionRH',
+                                        version: '0.0.1'
 
+                        }
+
+
+                }
   }
 
 }
