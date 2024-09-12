@@ -1,44 +1,42 @@
 pipeline {
 
   agent any
-  stages{
-      stage('git checkout'){
-         steps{
+  stages {
+      stage('git checkout') {
+         steps {
             git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
          }
-
       }
+
       stage('build') {
-                  steps {
+          steps {
+              bat 'mvn clean package'
+          }
+      }
 
-                      bat 'mvn clean package'
-                  }
+      stage('Unit Tests') {
+          steps {
+              bat 'mvn test'
+          }
+      }
+
+      stage('SonarQube Analysis') {
+          steps {
+              withSonarQubeEnv(installationName: 'sonar', credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782') {
+                  bat 'mvn clean package sonar:sonar'
               }
-      stage('Unit Tests'){
-                    steps{
-                    bat 'mvn test'
-                   }
-                  }
+          }
+      }
 
-      stage('SonarQube Analysis')    {
+      stage('Quality Gate status') {
+          steps {
+              script {
+                  waitForQualityGate abortPipeline: true, credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782'
+              }
+          }
+      }
 
-                   steps{
-                   withSonarQubeEnv(installationName: 'sonar', credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782') {
-                              bat 'mvn clean package sonar:sonar'
-                          }
-                   }
-                                     }
-
-      stage('Quality Gate status'){
-
-                        steps{
-
-                          script{waitForQualityGate abortPipeline: true, credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782'}
-                          }
-
-                        }
-
-      stage("Publish to Nexus") {
+      stage('Publish to Nexus') {
           steps {
               script {
                   // Lire le fichier POM en utilisant le plugin pipeline-utility-steps
@@ -87,41 +85,32 @@ pipeline {
           }
       }
 
+      stage('Docker image build') {
+          steps {
+              script {
+                  // Construire l'image Docker
+                  bat 'docker build -t khmilet/gestionrh:latest .'
 
-      stage('Docker image build'){
-
-                steps{
-
-                    script{
-
-                          // Construire l'image Docker
-                                          bat 'docker build -t khmilet/gestionrh:latest .'
-
-                            // Stopper et supprimer l'ancien conteneur (s'il existe)
-                                          bat 'docker rm -f gestionrh-container || true'
-
-
-                    }
-
-
-
-                }
-
-       stage('Push to Docker Hub') {
-                  steps {
-                      script {withCredentials([string(credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782', variable: 'docker-hub')]) {
-                                  // Se connecter à Docker Hub
-                                    bat 'docker login -u khmilet -p nkhilettte'
-
-                                   // Pousser l'image Docker sur Docker Hub
-                                   bat 'docker push khmilet/gestionrh:latest'
-                              }
-
-                      }
-                  }
+                  // Stopper et supprimer l'ancien conteneur (s'il existe)
+                  bat 'docker rm -f gestionrh-container || true'
+              }
+          }
       }
 
-    }
+      stage('Push to Docker Hub') {
+          steps {
+              script {
+                  withCredentials([string(credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782', variable: 'docker-hub')]) {
+                      // Se connecter à Docker Hub
+                      bat 'docker login -u khmilet -p nkhilettte'
+
+                      // Pousser l'image Docker sur Docker Hub
+                      bat 'docker push khmilet/gestionrh:latest'
+                  }
+              }
+          }
+      }
 
   }
+
 }
