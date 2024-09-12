@@ -109,12 +109,14 @@ pipeline {
 
        stage('Push to Docker Hub') {
                   steps {
-                      script {
-                          // Se connecter à Docker Hub
-                          bat 'docker login -u khmilet -p nkhilettte'
+                      script {withCredentials([string(credentialsId: 'b6c852b6-4f44-4d8b-bcfb-09f690d90782', variable: 'docker-hub')]) {
+                                  // Se connecter à Docker Hub
+                                    bat 'docker login -u khmilet -p nkhilettte'
 
-                          // Pousser l'image Docker sur Docker Hub
-                          bat 'docker push khmilet/gestionrh:latest'
+                                   // Pousser l'image Docker sur Docker Hub
+                                   bat 'docker push khmilet/gestionrh:latest'
+                              }
+
                       }
                   }
       }
