@@ -88,6 +88,37 @@ pipeline {
       }
 
 
+      stage('Docker image build'){
+
+                steps{
+
+                    script{
+
+                          // Construire l'image Docker
+                                          bat 'docker build -t khmilet/gestionrh:latest .'
+
+                            // Stopper et supprimer l'ancien conteneur (s'il existe)
+                                          bat 'docker rm -f gestionrh-container || true'
+
+
+                    }
+
+
+
+                }
+
+       stage('Push to Docker Hub') {
+                  steps {
+                      script {
+                          // Se connecter à Docker Hub
+                          sh 'docker login -u khmilet -p nkhilettte'
+
+                          // Pousser l'image Docker sur Docker Hub
+                          sh 'docker push khmilet/gestionrh:latest'
+                      }
+                  }
+      }
+
   }
 
 }
