@@ -111,10 +111,10 @@ pipeline {
                   steps {
                       script {
                           // Se connecter à Docker Hub
-                          sh 'docker login -u khmilet -p nkhilettte'
+                          bat 'docker login -u khmilet -p nkhilettte'
 
                           // Pousser l'image Docker sur Docker Hub
-                          sh 'docker push khmilet/gestionrh:latest'
+                          bat 'docker push khmilet/gestionrh:latest'
                       }
                   }
       }
