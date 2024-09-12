@@ -1,6 +1,6 @@
 FROM maven as build
 WORKDIR /app
-COPY. .
+COPY . .
 RUN mvn install
 
 # Utiliser une image de base OpenJDK
