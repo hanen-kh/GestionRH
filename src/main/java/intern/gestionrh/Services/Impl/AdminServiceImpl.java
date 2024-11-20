@@ -7,6 +7,7 @@ import intern.gestionrh.Repositories.AdminRepository;
 import intern.gestionrh.Repositories.RoleRepository;
 import intern.gestionrh.Services.AdminService;
 import intern.gestionrh.dto.AdminDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ private ModelMapper modelMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Hidden
     @Override
     @Transactional
     public AdminDto saveAdmin(AdminDto adminDto) {

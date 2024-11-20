@@ -4,6 +4,7 @@ import intern.gestionrh.Entities.Departement;
 import intern.gestionrh.Repositories.DepartementRepository;
 import intern.gestionrh.Services.DepartementService;
 import intern.gestionrh.dto.DepartementDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -21,6 +22,8 @@ public class DepartementServiceImpl implements DepartementService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Hidden
+
     @Override
     @Transactional
     public DepartementDto createDepartement(DepartementDto departementDto) {
@@ -29,12 +32,14 @@ public class DepartementServiceImpl implements DepartementService {
         return modelMapper.map(departement, DepartementDto.class);
     }
 
+    @Hidden
     @Override
     public DepartementDto getDepartementById(Long id) {
         Departement departement = departementRepo.findById(id).orElse(null);
         return modelMapper.map(departement, DepartementDto.class);
     }
 
+    @Hidden
     @Override
     public List<DepartementDto> getAllDepartements() {
         List<Departement> departements = departementRepo.findAll();
@@ -43,6 +48,7 @@ public class DepartementServiceImpl implements DepartementService {
                 .collect(Collectors.toList());
     }
 
+    @Hidden
     @Override
     @Transactional
     public DepartementDto updateDepartement(Long id, DepartementDto departementDto) {
@@ -54,6 +60,7 @@ public class DepartementServiceImpl implements DepartementService {
         return modelMapper.map(departementMisAJour, DepartementDto.class);
     }
 
+    @Hidden
     @Override
     public void deleteDepartementById(Long id) {
         if (!departementRepo.existsById(id)) {

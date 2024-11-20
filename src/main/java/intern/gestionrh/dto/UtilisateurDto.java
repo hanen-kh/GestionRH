@@ -2,11 +2,12 @@ package intern.gestionrh.dto;
 
 import intern.gestionrh.Entities.Role;
 import intern.gestionrh.Entities.TypeRole;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 
 import java.util.Date;
 import java.util.List;
-
+@Hidden
 @Data
 @Getter
 @Setter

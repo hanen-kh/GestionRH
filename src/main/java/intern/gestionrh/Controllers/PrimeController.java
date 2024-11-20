@@ -3,6 +3,7 @@ package intern.gestionrh.Controllers;
 import intern.gestionrh.Services.Impl.PrimeServiceImpl;
 import intern.gestionrh.Services.PrimeService;
 import intern.gestionrh.dto.PrimeDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/prime")
 public class PrimeController {
     @Autowired
@@ -24,19 +26,16 @@ public class PrimeController {
         return ResponseEntity.ok(primes);
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_RH')")
-    public ResponseEntity<PrimeDto> getPrimeById(@PathVariable Long id) {
-        PrimeDto prime = primeService.findPrimeById(id);
-        return ResponseEntity.ok(prime);
-    }
+
+
 
     @PostMapping("/add/{UtilisateurId}")
     @PreAuthorize("hasAuthority('ROLE_RH')")
-    public ResponseEntity<PrimeDto> createPrime(@PathVariable Long utilisateurId, @RequestBody PrimeDto primeDto) {
-        PrimeDto newPrime = primeService.savePrime(utilisateurId, primeDto);
+    public ResponseEntity<PrimeDto> createPrime(@PathVariable Long UtilisateurId, @RequestBody PrimeDto primeDto) {
+        PrimeDto newPrime = primeService.savePrime(UtilisateurId, primeDto);
         return ResponseEntity.ok(newPrime);
     }
+
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_RH')")
@@ -45,6 +44,7 @@ public class PrimeController {
         return ResponseEntity.ok(updatedPrime);
     }
 
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_RH')")
     public ResponseEntity<Void> deletePrime(@PathVariable Long id) {
@@ -52,10 +52,5 @@ public class PrimeController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/primes")
-    @PreAuthorize("hasAuthority('ROLE_RH')")
-    public ResponseEntity<Void> deleteAllPrimes() {
-        primeService.deleteAllPrimes();
-        return ResponseEntity.noContent().build();
-    }
+
 }

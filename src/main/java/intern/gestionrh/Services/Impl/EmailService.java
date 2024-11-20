@@ -1,5 +1,6 @@
 package intern.gestionrh.Services.Impl;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     @Autowired
    private JavaMailSender mailSender;
+
+    @Hidden
 
     public void sendSimpleEmail( String toEmail, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();

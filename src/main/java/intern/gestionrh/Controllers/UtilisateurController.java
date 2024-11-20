@@ -12,6 +12,7 @@ import intern.gestionrh.dto.AuthentificationDto;
 import intern.gestionrh.dto.RhDto;
 import intern.gestionrh.dto.UtilisateurDto;
 import io.jsonwebtoken.lang.Assert;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
 @RequestMapping("/api/utilisateur")
 
@@ -47,6 +49,7 @@ public class UtilisateurController {
 
     @Autowired
     private AdminServiceImpl adminService;
+
 
 
 
@@ -107,7 +110,7 @@ public void demandenouveauPass(@RequestBody Map<String,String> parametres){
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<UtilisateurDto> getUtilisateurById(@PathVariable Long id) {
         return ResponseEntity.ok(utilisateurService.getUtilisateurById(id));
     }
@@ -120,7 +123,7 @@ public void demandenouveauPass(@RequestBody Map<String,String> parametres){
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUtilisateurById(@PathVariable Long id) {
         utilisateurService.deleteUtilisateurById(id);
         return ResponseEntity.noContent().build();
@@ -130,7 +133,7 @@ public void demandenouveauPass(@RequestBody Map<String,String> parametres){
 
 
     @GetMapping("/departement/{nomDepartement}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
     public List<UtilisateurDto> getUtilisateursByNomDepartement(@PathVariable String nomDepartement) {
         return utilisateurService.getUtilisateursByNomDepartement(nomDepartement);
     }

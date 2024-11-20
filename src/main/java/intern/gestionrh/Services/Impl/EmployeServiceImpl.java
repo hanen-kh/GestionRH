@@ -9,6 +9,7 @@ import intern.gestionrh.Services.EmployeService;
 import intern.gestionrh.dto.CongeDto;
 import intern.gestionrh.dto.EmployeDto;
 import intern.gestionrh.dto.UtilisateurDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class EmployeServiceImpl  implements EmployeService {
 
 
 
+    @Hidden
     @Override
     public List<EmployeDto> findAllEmployes() {
         List<Utilisateur> employes = utilisateurRepo.findAll(); //  filtrer seulement les employes
@@ -58,6 +60,7 @@ public class EmployeServiceImpl  implements EmployeService {
                 .collect(Collectors.toList());
     }
 
+    @Hidden
     @Override
     public EmployeDto findEmployeById(Long id) {
         Utilisateur employe = utilisateurRepo.findById(id)
@@ -70,6 +73,7 @@ public class EmployeServiceImpl  implements EmployeService {
 
 
 
+    @Hidden
 
     @Override
     @Transactional
@@ -82,6 +86,7 @@ public class EmployeServiceImpl  implements EmployeService {
         utilisateurRepo.delete(employe);
     }
 
+    @Hidden
     @Override
     @Transactional
     public EmployeDto updateEmploye(Long id, EmployeDto employeDto) {
@@ -98,6 +103,7 @@ public class EmployeServiceImpl  implements EmployeService {
         return modelMapper.map(employe, EmployeDto.class);
     }
 
+    @Hidden
 
     @Override
     @Transactional
@@ -145,6 +151,7 @@ public class EmployeServiceImpl  implements EmployeService {
         // Retourner le DTO du congé sauvegardé
         return modelMapper.map(conge, CongeDto.class);
     }
+    @Hidden
 
     @Override
     public List<CongeDto> consulterReponsesConges(Long employeId) {
@@ -154,6 +161,7 @@ public class EmployeServiceImpl  implements EmployeService {
                 .collect(Collectors.toList());
     }
 
+    @Hidden
     @Override
     public List<EmployeDto> getEmployesByNomDepartement(String nomDepartement) {
         return utilisateurRepo.findByDepartementNom(nomDepartement).stream()
@@ -161,6 +169,8 @@ public class EmployeServiceImpl  implements EmployeService {
                 .map(utilisateur -> modelMapper.map(utilisateur, EmployeDto.class)) // Convertit en EmployeDto
                 .collect(Collectors.toList());
     }
+
+    @Hidden
 
 @Override
     public List<EmployeDto> getHistoriqueEmployes(Long departementId, LocalDate dateEmbauche) {
@@ -176,7 +186,7 @@ public class EmployeServiceImpl  implements EmployeService {
     }
 
 
-
+    @Hidden
 
     @Transactional
 @Override

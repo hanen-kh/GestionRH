@@ -9,6 +9,7 @@ import intern.gestionrh.Repositories.RoleRepository;
 import intern.gestionrh.Services.RhService;
 
 import intern.gestionrh.dto.RhDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
+@Hidden
 @AllArgsConstructor
 @Service
 public class RhServiceImpl implements RhService {

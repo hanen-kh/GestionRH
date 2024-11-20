@@ -40,6 +40,7 @@ public class SecurityConfig  {
 
 
 
+
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity)throws Exception{
         return
@@ -48,6 +49,7 @@ public class SecurityConfig  {
                                 authorize ->
                                         authorize
                                                 .requestMatchers(POST,"/api/utilisateur/demande-nouveau-pass", "/api/utilisateur/changerpass", "/api/utilisateur/connexion").permitAll()
+                                                .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**").permitAll()
 
                                                 .anyRequest().authenticated()
                         )

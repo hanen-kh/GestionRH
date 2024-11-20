@@ -5,6 +5,7 @@ import intern.gestionrh.Repositories.CongeRepository;
 import intern.gestionrh.Repositories.EmployeRepository;
 import intern.gestionrh.Services.CongeService;
 import intern.gestionrh.dto.CongeDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class CongeServiceImpl implements CongeService {
     private ModelMapper modelMapper;
     @Autowired
     private EmailService emailService;
+
+    @Hidden
     @Override
     public Set<Conge> findCongesByEmployeId(Long idUEmploye) {
         Employe employe = employeRepo.findById(idUEmploye)
@@ -42,6 +45,7 @@ public class CongeServiceImpl implements CongeService {
 
 
 
+    @Hidden
     @Override
     @Transactional
     public CongeDto updateConge(Long id, CongeDto congeDetails) {
@@ -81,6 +85,7 @@ public class CongeServiceImpl implements CongeService {
         return congeDetails;}
 
 
+    @Hidden
     @Override
     @Transactional
     public void reponseDemandeConge(Long congeId, StatutConge nouveauStatut) {

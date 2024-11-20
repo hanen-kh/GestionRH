@@ -5,6 +5,7 @@ import intern.gestionrh.Entities.Validation;
 import intern.gestionrh.Repositories.UtilisateurRepository;
 import intern.gestionrh.Repositories.ValidationRepository;
 import intern.gestionrh.Services.ValidationService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
-
+@Hidden
 @Service
 @AllArgsConstructor
 public class ValidationServiceImpl implements ValidationService {

@@ -4,6 +4,7 @@ import intern.gestionrh.Services.EmployeService;
 import intern.gestionrh.Services.Impl.EmployeServiceImpl;
 import intern.gestionrh.dto.CongeDto;
 import intern.gestionrh.dto.EmployeDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -17,17 +18,14 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/employe")
 public class EmployeController {
     @Autowired
     private EmployeService employeService;
 
-    @GetMapping("/departement/{nomDepartement}")
-    @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
-    public ResponseEntity<List<EmployeDto>> getEmployesByNomDepartement(@PathVariable String nomDepartement) {
-        List<EmployeDto> employes = employeService.getEmployesByNomDepartement(nomDepartement);
-        return ResponseEntity.ok(employes);
-    }
+
+
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_RH', 'ROLE_ADMIN')")
@@ -56,11 +54,8 @@ public class EmployeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(employeDto);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmploye(@PathVariable Long id) {
-        employeService.deleteEmployeById(id);
-        return ResponseEntity.noContent().build();
-    }
+
+
 
     @PostMapping("/{employeId}/conges")
     public ResponseEntity<CongeDto> demanderConge(@PathVariable Long employeId, @RequestBody CongeDto congeDto) {
@@ -74,9 +69,6 @@ public class EmployeController {
         return ResponseEntity.ok(conges);
     }
 
-    @GetMapping("/{departementId}/historique-employes")
-    public List<EmployeDto> getHistoriqueEmployes(@PathVariable Long departementId,
-                                                  @RequestParam("dateEmbauche") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateEmbauche) {
-        return employeService.getHistoriqueEmployes(departementId, dateEmbauche);
-    }
+
+
 }

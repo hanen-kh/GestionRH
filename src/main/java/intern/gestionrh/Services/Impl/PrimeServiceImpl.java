@@ -6,6 +6,7 @@ import intern.gestionrh.Repositories.PrimeRepository;
 import intern.gestionrh.Repositories.UtilisateurRepository;
 import intern.gestionrh.Services.PrimeService;
 import intern.gestionrh.dto.PrimeDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Hidden
 @Service
 public class PrimeServiceImpl implements PrimeService {
     @Autowired

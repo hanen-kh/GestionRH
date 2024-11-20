@@ -2,10 +2,11 @@ package intern.gestionrh.dto;
 
 import intern.gestionrh.Entities.StatutConge;
 import intern.gestionrh.Entities.TypeConge;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.*;
 
 import java.util.Date;
-
+@Hidden
 @Data
 
 public class CongeDto {
