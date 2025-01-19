@@ -13,7 +13,8 @@ pipeline {
      stage('Build') {
                steps {
                               echo 'Building the project with Maven...'
-                               sh 'mvn test'
+                               bat '"C:\\Windows\\System32\\cmd.exe" /C mvn clean'
+
 
                           }
           }
