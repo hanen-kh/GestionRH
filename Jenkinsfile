@@ -15,7 +15,9 @@ pipeline {
 
 
       stage('Docker image build') {
-
+         steps {
+                     git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
+                  }
       }
 
 
