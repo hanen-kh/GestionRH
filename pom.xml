@@ -27,8 +27,19 @@
         <url/>
     </scm>
     <properties>
+        <!-- Java version -->
         <java.version>17</java.version>
+
+        <!-- SonarQube properties -->
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+        <sonar.projectKey>DevSecOps</sonar.projectKey>
+        <sonar.projectName>DevSecOps</sonar.projectName>
+        <sonar.projectVersion>1.0</sonar.projectVersion>
+        <sonar.login>sqp_87dfd75898bc38022a8054e44bcbc8644e3744ca</sonar.login>
+        <!-- Optionally specify source encoding -->
+        <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -230,7 +241,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-
+                <version>3.9.0.2155</version>
             </plugin>
 
 
