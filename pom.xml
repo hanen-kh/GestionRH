@@ -225,6 +225,7 @@
                     <skipTests>false</skipTests>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
