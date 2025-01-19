@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'devSecOps:latest'            // Nom et tag de l'image Docker
+        DOCKER_IMAGE = 'devsecops:latest'            // Nom et tag de l'image Docker
         DOCKER_REGISTRY = 'khmilett/devsecops'    // URL du registre Docker
         TRIVY_SEVERITY = 'HIGH,CRITICAL'          // Niveaux de gravité pour Trivy
     }
