@@ -16,13 +16,7 @@ pipeline {
 
       stage('Docker image build') {
           steps {
-              script {
-                  // Construire l'image Docker
-                  bat 'docker build -t khmilet/gestionrh:latest .'
 
-                  // Stopper et supprimer l'ancien conteneur (s'il existe)
-                  bat 'docker rm -f gestionrh-container || true'
-              }
           }
       }
 
