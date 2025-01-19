@@ -1,69 +1,48 @@
 pipeline {
+    agent any
 
-  agent any
-  stages {
-      stage('git checkout') {
-         steps {
-            git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-         }
-      }
+    environment {
+        DOCKER_IMAGE = 'devSecOps:latest'            // Nom et tag de l'image Docker
+        DOCKER_REGISTRY = 'khmilett/devsecops'    // URL du registre Docker
+        TRIVY_SEVERITY = 'HIGH,CRITICAL'          // Niveaux de gravité pour Trivy
+    }
 
-
-
-     stage('Build') {
-              steps {
-                          git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                       }
-          }
-
-
-     stage('Run Unit Tests') {
-                steps {
-                                          git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                                       }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                echo 'Cloning the repository...'
+                git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
             }
+        }
 
-stage('Code Quality Analysis') {
+        stage('Build Docker Image') {
             steps {
-                                                      git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                                                   }
-        }
-
-
-stage('Build Docker Image') {
-            steps {
-                 git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-              }
-        }
-
-
- stage('Trivy Docker Image Scan') {
-           steps {
-                            git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                         }
-        }
-
-        stage('ZAP Security Scan') {
-           steps {
-                            git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                         }
-        }
-
-
-
- stage('Push Docker Image to Registry') {
-            steps {
-                      git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                    }
-        }
-
-        stage('Deploy Application') {
-                   steps {
-                       git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
-                 }
+                echo 'Building Docker image...'
+                sh '''
+                docker build -t ${DOCKER_IMAGE} .
+                '''
             }
+        }
 
+        stage('Scan with Trivy') {
+            steps {
+                echo 'Scanning Docker image with Trivy...'
+                sh '''
+                trivy image --severity ${TRIVY_SEVERITY} ${DOCKER_IMAGE}
+                '''
+            }
+        }
+    }
 
-  }
-
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+        always {
+            cleanWs() // Nettoie le workspace Jenkins après chaque exécution
+        }
+    }
 }
