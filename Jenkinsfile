@@ -1,48 +1,112 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    tools {
+        maven 'Maven-3.9'   
+        jdk   'JDK-17'      
+    }
+
     environment {
-        DOCKER_IMAGE = 'devsecops:latest'            // Nom et tag de l'image Docker
-        DOCKER_REGISTRY = 'khmilett/devsecops'    // URL du registre Docker
-        TRIVY_SEVERITY = 'HIGH,CRITICAL'          // Niveaux de gravité pour Trivy
+        IMAGE_NAME      = 'khmilett/devsecops'
+        IMAGE_TAG       = "${BUILD_NUMBER}"
+        FULL_IMAGE      = "${IMAGE_NAME}:${IMAGE_TAG}"
+        TRIVY_SEVERITY  = 'HIGH,CRITICAL'
+        DOCKERHUB_CREDS = credentials('dockerhub-credentials')
     }
 
     stages {
-        stage('Git Checkout') {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Build & Unit Tests') {
             steps {
-                echo 'Cloning the repository...'
-                git branch: 'main', url: 'https://github.com/hanen-kh/GestionRH.git'
+                sh 'mvn -B clean verify'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis (SAST)') {
+            steps {
+                withSonarQubeEnv('sonarqube') {   
+                    sh 'mvn -B sonar:sonar -Dsonar.projectKey=gestionrh'
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Scan Source (deps + secrets)') {
+            steps {
+                sh '''
+                trivy fs --scanners vuln,secret \
+                    --severity ${TRIVY_SEVERITY} \
+                    --ignore-unfixed --exit-code 0 .
+                '''
+            }
+        }
+
+        stage('Lint Dockerfile') {
+            steps {
+                sh 'hadolint Dockerfile || true'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
+                sh 'docker build -t ${FULL_IMAGE} -t ${IMAGE_NAME}:latest .'
+            }
+        }
+
+        stage('Scan Docker Image (Trivy)') {
+            steps {
                 sh '''
-                docker build -t ${DOCKER_IMAGE} .
+                trivy image --format json --output trivy-report.json ${FULL_IMAGE}
+                trivy image --severity ${TRIVY_SEVERITY} \
+                    --ignore-unfixed --exit-code 1 ${FULL_IMAGE}
                 '''
             }
         }
 
-        stage('Scan with Trivy') {
+        stage('Push to Registry') {
+            when { branch 'main' }
             steps {
-                echo 'Scanning Docker image with Trivy...'
                 sh '''
-                trivy image --severity ${TRIVY_SEVERITY} ${DOCKER_IMAGE}
+                echo "$DOCKERHUB_CREDS_PSW" | docker login -u "$DOCKERHUB_CREDS_USR" --password-stdin
+                docker push ${FULL_IMAGE}
+                docker push ${IMAGE_NAME}:latest
                 '''
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline executed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
         always {
-            cleanWs() // Nettoie le workspace Jenkins après chaque exécution
+            archiveArtifacts artifacts: 'trivy-report.json, target/*.jar', allowEmptyArchive: true
+            sh '''
+            docker logout || true
+            docker rmi ${FULL_IMAGE} ${IMAGE_NAME}:latest || true
+            '''
+            cleanWs()
         }
+        success { echo 'Pipeline executed successfully!' }
+        failure { echo 'Pipeline failed!' }
     }
 }
